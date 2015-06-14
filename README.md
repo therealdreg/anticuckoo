@@ -1,2 +1,2 @@
 # anticuckoo
-A tool to detect Cuckoo Sandbox 
+A tool to detect and crash Cuckoo Sandbox 
