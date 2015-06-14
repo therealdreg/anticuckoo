@@ -6,7 +6,11 @@ A tool to detect and crash Cuckoo Sandbox. A boring Sunday...
 * Cuckoo hooks detection (all kind of cuckoo hooks).
 * Suspicius data in own memory (without APIs, page per page scanning).
 
-Submit Release/anticuckoo.exe to analysis in Cuckoo Sandbox. Check the screenshots (console output) or  
+Submit Release/anticuckoo.exe to analysis in Cuckoo Sandbox. Check the screenshots (console output) or in Accesed Files in Sumary.
+
+(https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/anticuckoo.png)
+
+(https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/Sumary.png)
 
 ## TODO
 * Python process & agent.py detection - 70% DONE
