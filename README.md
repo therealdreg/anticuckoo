@@ -8,9 +8,9 @@ A tool to detect and crash Cuckoo Sandbox. A boring Sunday...
 
 Submit Release/anticuckoo.exe to analysis in Cuckoo Sandbox. Check the screenshots (console output) or in Accesed Files in Sumary.
 
-(https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/anticuckoo.png)
+![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/anticuckoo.png)
 
-(https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/Sumary.png)
+![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/Sumary.png)
 
 ## TODO
 * Python process & agent.py detection - 70% DONE
