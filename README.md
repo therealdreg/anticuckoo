@@ -10,5 +10,6 @@ Submit Release/anticuckoo.exe to analysis in Cuckoo Sandbox. Check the screensho
 
 ## TODO
 * Python process & agent.py detection - 70% DONE
+* Improve hook detection checking correct bytes in well known places (Ex Native APIs always have the same signatures etc.).
 
 New ideas & PRs are wellcome.
