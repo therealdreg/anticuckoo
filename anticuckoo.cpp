@@ -34,7 +34,7 @@ int Hooks(bool * found)
 {
 	API_TABLE_t api_table[] =
 	{
-		API_TABLE_ENTRY_KERNEL32(DeleteFileW),
+		API_TABLE_ENTRY_KERNEL32(CreateDirectoryExW),
 
 		API_TABLE_ENTRY_NTDLL(NtQueryDirectoryFile),
 		API_TABLE_ENTRY_NTDLL(NtDeleteFile),
@@ -149,10 +149,10 @@ int SuspiciusDataInMyMemory(bool * found)
 	DATA_ENTRY_t suspicius_data[] =
 	{
 		DATA_SUSP_ENTRY_STRING("cuckoomon"),
-		DATA_SUSP_ENTRY_STRING("New_NtCreateThreadEx"),
+		DATA_SUSP_ENTRY_STRING("New_NtDeleteFile"),
 		DATA_SUSP_ENTRY_STRING("retaddr-check"),
 		DATA_SUSP_ENTRY_STRING("HookHandle"),
-		DATA_SUSP_ENTRY_STRING("unhook"),
+		DATA_SUSP_ENTRY_STRING("nhook detection"),
 		DATA_SUSP_ENTRY_STRING("distorm"),
 		DATA_SUSP_ENTRY_STRING("capstone"),
 		DATA_SUSP_ENTRY_STRING("Cuckoo")
