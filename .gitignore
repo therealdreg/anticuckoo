@@ -20,6 +20,7 @@ winxprelease
 *.tli
 *.tlh
 *.tmp
+anticuckoo.i-*
 *.tmp_proj
 *.log
 *.vspscc
