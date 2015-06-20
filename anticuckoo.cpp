@@ -234,6 +234,8 @@ int filterExceptionExecuteHandler(int code, PEXCEPTION_POINTERS ex)
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
+#define EXT_REPORT ".dtct"
+
 void Report(char * format, ...)
 {
 	FILE * file;
@@ -243,6 +245,7 @@ void Report(char * format, ...)
 
 	memset(file_name, 0, sizeof(file_name));
 	vsprintf_s(file_name, sizeof(file_name), format, args);
+	strcat_s(file_name, sizeof(file_name), EXT_REPORT);
 	fopen_s(&file, file_name, "wb+");
 	if (file != NULL)
 	{
