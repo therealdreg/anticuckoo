@@ -18,13 +18,15 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 	if (Hooks(&found) == 0)
 	{
 		OutInfo("Hooks %s", found ? "FOUND" : "NOT FOUND");
-		Report("Hooks");
+		if (found)
+			Report("Hooks");
 	}
 
 	if (SuspiciusDataInMyMemory(&found) == 0)
 	{
 		OutInfo("SuspiciusDataInMyMemory %s", found ? "FOUND" :"NOT FOUND");
-		Report("SuspiciusDataInMyMemory");
+		if (found)
+			Report("SuspiciusDataInMyMemory");
 	}
 
 	return 0;
