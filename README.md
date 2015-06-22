@@ -11,11 +11,11 @@ A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and
 
 ### Cuckoo Detection
 
-Submit Release/anticuckoo.exe to analysis in Cuckoo Sandbox. Check the screenshots (console output):
+Submit Release/anticuckoo.exe to analysis in Cuckoo Sandbox. Check the screenshots (console output). Also you can check Accesed Files in Sumary:
 
 ![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/anticuckoo.png)
 
-Also you can check Accesed Files in Sumary (django web).
+Accesed Files in Sumary (django web):
 
 ![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/Sumary.png)
 
