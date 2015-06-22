@@ -27,7 +27,7 @@ Specify in submit options the crash argument, ex **-c1** (via django web):
 
 ![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/cuckooarguments.png)
 
-And check **Screenshots/connect via RDP/whatson connection** to verify the crash:
+And check **Screenshots/connect via RDP/whatson connection** to verify the crash. Ex **-c1** via RDP:
 
 ![Screenshot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/cuckoocrash.png)
 
