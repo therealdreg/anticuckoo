@@ -6,8 +6,8 @@ A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and
 * [Detection](#cuckoo-detection):
   * Cuckoo hooks detection (all kind of cuckoo hooks).
   * Suspicius data in own memory (without APIs, page per page scanning).
-* [Crash (Execute with arguments)](#cuckoo-crash):
-  * -c1:
+* [Crash (Execute with arguments)](#cuckoo-crash) (out of a sandbox these POCs dont crash the program):
+  * -c1: Modify the RET N instruction of a hooked API with a higher value. Next call to API with more PUSH instruction. If the hooked API is called from the Cuckoo's HookHandler with its own stack frame and the original API ARGs... CRASH!.
 
 [TODO list](#todo)
 
