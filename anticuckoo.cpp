@@ -26,6 +26,8 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 			return StackRetCrash();
 	}
 
+	OutInfo("Detecting cuckoo...");
+
 	//TODO: make a table here
 	if (Hooks(&found) == 0)
 	{
@@ -109,7 +111,7 @@ int StackRetCrash(void)
 						if (!VirtualProtect((LPVOID)insn->address, 3, old_protect, &new_protect))
 							Error("VirtualProtect old rights");
 
-						OutInfo("Crashing, if %s - 0x%08X is hooked and called from HookHandler", STACK_RET_CRASH_API_NAME, addr_to_call);
+						OutInfo("Crashing, if %s - 0x%08X is hooked and called from other handler", STACK_RET_CRASH_API_NAME, addr_to_call);
 						OutInfo("Pushing %d DWORDs and calling to API...", STACK_RET_CRASH_NEW_RET_VALUE / 4);
 						for (int x = 0; x < STACK_RET_CRASH_NEW_RET_VALUE; x += 4)
 						{
