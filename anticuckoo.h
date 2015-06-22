@@ -6,7 +6,7 @@
 #include <capstone.h>
 #include "misc.h"
 
-#define VERSION_STRING_EXTENDED "1.0 alpha"
+#define VERSION_STRING_EXTENDED "1.1 alpha"
 
 #define SUSP_CTRL_STRING "_CTRL"
 #define DATA_SUSP_ENTRY_STRING(instring) {instring SUSP_CTRL_STRING, sizeof(instring) - 1}
