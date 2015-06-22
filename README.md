@@ -2,6 +2,7 @@
 A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and Accuvant version.
 
 ## Features 
+View [TODO](#TODO)
 
 * [Detection](#cuckoo-detection):
   * Cuckoo hooks detection (all kind of cuckoo hooks).
