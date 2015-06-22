@@ -28,5 +28,7 @@ int filterExceptionExecuteHandler(int code, PEXCEPTION_POINTERS ex);
 void Report(char * format, ...);
 int Hooks(bool * found);
 int CheckHook(bool * found, unsigned char * address);
+int StackRetCrash(void);
+int GetInstructionOut(char * out_str, size_t out_str_size, cs_insn *insn);
 
 #endif /* _ANTICUCKOO_H__ */

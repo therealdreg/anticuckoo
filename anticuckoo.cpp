@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "anticuckoo.h"
 
+// TODO: make more .cpp and .h files for all this...
+
 int AntiCuckoo(int argc, _TCHAR* argv[])
 {
 	verbose = false;
@@ -10,11 +12,21 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 		"Anticukoo %s\n"
 		"By David Reguera Garcia aka Dreg - Dreg@fr33project.org\n"
 		"http://www.fr33project.org/\n"
+		"\n"
+		"Crash parameters:\n"
+		"    -c1: Crashing modifying RET instruction\n"
 		"-\n"
 		, 
 		VERSION_STRING_EXTENDED
 	);
 
+	if (argc == 2)
+	{
+		if (_tcscmp(argv[1], TEXT("-c1")) == 0)
+			return StackRetCrash();
+	}
+
+	//TODO: make a table here
 	if (Hooks(&found) == 0)
 	{
 		OutInfo("Hooks %s", found ? "FOUND" : "NOT FOUND");
@@ -27,6 +39,134 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 		OutInfo("SuspiciusDataInMyMemory %s", found ? "FOUND" :"NOT FOUND");
 		if (found)
 			Report("SuspiciusDataInMyMemory");
+	}
+
+	return 0;
+}
+
+#define STACK_RET_CRASH_API_NAME "DeleteFileA"
+#define STACK_RET_CRASH_API_RET_VALUE 0x04
+
+#define STACK_RET_CRASH_NEW_RET_VALUE 0x40
+
+int StackRetCrash(void)
+{
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+	char instruction_out[MAX_PATH];
+	void * api = (void *)GetProcAddress(GetModuleHandleW(L"kernelbase.dll"), STACK_RET_CRASH_API_NAME);
+
+	if (api == NULL)
+	{
+		api = (void *)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), STACK_RET_CRASH_API_NAME);
+		if (api == NULL)
+		{
+			Error("Get API address: %s", STACK_RET_CRASH_API_NAME);
+			return -1;
+		}
+	}
+	void * addr_to_call = (void*)api;
+
+	OutInfo("Crashing modifying RET instruction in: %s", STACK_RET_CRASH_API_NAME);
+	if (cs_open(CS_ARCH_X86, CS_MODE_32, &handle) != CS_ERR_OK)
+		return -1;
+
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+	
+	// TODO: refactorize this crap.. (I know, I know, a lot of this kind comments xD)
+	do
+	{
+		count = cs_disasm(handle, (const uint8_t *)api, 20, (uint64_t)api, 1, &insn);
+		if (count == 1)
+		{
+			GetInstructionOut(instruction_out, sizeof(instruction_out), insn);
+			OutInfo("%s", instruction_out);
+
+			api = (void *)((char *)api + insn->size);
+			if (insn->size == 3 && insn->bytes[0] == 0xC2 && insn->bytes[1] == STACK_RET_CRASH_API_RET_VALUE && insn->bytes[2] == 0x00)
+			{
+				DWORD old_protect;
+				OutInfo("ret 0x%02X detected at: 0x%08X! changing page rights...", STACK_RET_CRASH_API_RET_VALUE, (DWORD)insn->address);
+				if (!VirtualProtect((LPVOID)insn->address, 3, PAGE_EXECUTE_READWRITE, &old_protect))
+				{
+					Error("VirtualProtect");
+					return -1; // TODO: fix cs_ mem leaks...
+				}
+				OutInfo("Writing 0x%02X value in ret instruction...", STACK_RET_CRASH_NEW_RET_VALUE);
+				((unsigned char *)insn->address)[1] = STACK_RET_CRASH_NEW_RET_VALUE;
+				OutInfo("Disasembling new ret instruction:");
+				count = cs_disasm(handle, (const uint8_t *)insn->address, insn->size, (uint64_t)insn->address, 1, &insn);
+				if (count == 1)
+				{
+					GetInstructionOut(instruction_out, sizeof(instruction_out), insn);
+					OutInfo("%s", instruction_out);
+					if (insn->size == 3 && insn->bytes[0] == 0xC2 && insn->bytes[1] == STACK_RET_CRASH_NEW_RET_VALUE && insn->bytes[2] == 0x00)
+					{
+						DWORD new_protect;
+						OutInfo("New ret instruction is OK!");
+						OutInfo("Restoring old page rights...");
+						if (!VirtualProtect((LPVOID)insn->address, 3, old_protect, &new_protect))
+							Error("VirtualProtect old rights");
+
+						OutInfo("Crashing, if %s - 0x%08X is hooked and called from HookHandler", STACK_RET_CRASH_API_NAME, addr_to_call);
+						OutInfo("Pushing %d DWORDs and calling to API...", STACK_RET_CRASH_NEW_RET_VALUE / 4);
+						for (int x = 0; x < STACK_RET_CRASH_NEW_RET_VALUE; x += 4)
+						{
+							__asm 
+							{ 
+								push 0; 
+							}
+						}
+
+						__asm 
+						{
+							call addr_to_call; 
+						}
+
+						OutInfo("Congratz! NOT CUCKOOMON HERE!!");
+
+						//TODO: restore orig instruction (possible problems ex C runtime calls to modifyied API etc...)
+
+						return 0;
+					}
+					else
+					{
+						Error("Bad new instruction!");
+						return -1;
+					}
+				}
+				else
+				{
+					Error("Disasembling new ret instruction");
+					return -1;
+				}
+			}
+			cs_free(insn, count); 
+		}
+		else
+		{
+			Error("Failed to disassemble given code!\n");
+			return -1;
+		}
+	} while (1);
+
+	cs_close(&handle);
+
+	return 0;
+}
+
+int GetInstructionOut(char * out_str, size_t out_str_size, cs_insn *insn)
+{
+	char HEX_BYTE[3];
+
+	memset(out_str, 0, out_str_size);
+	sprintf_s(out_str, out_str_size, "0x%08X: %s %s | 0x", (DWORD)insn->address, insn->mnemonic, insn->op_str);
+	for (int i = 0; i < insn->size; i++)
+	{
+		memset(HEX_BYTE, 0, sizeof(HEX_BYTE));
+		sprintf_s(HEX_BYTE, sizeof(HEX_BYTE), "%02X", insn->bytes[i]);
+		strcat_s(out_str, out_str_size, HEX_BYTE);
 	}
 
 	return 0;
@@ -67,11 +207,10 @@ int Hooks(bool * found)
 	return 0;
 }
 
-
 int CheckHook(bool * found, unsigned char * address)
 {
 	*found = true;
-
+	//TODO: make a table here
 	if (address[0] == 0xE9)
 	{
 		OutInfo("hook_api_jmp_direct Detected!");
