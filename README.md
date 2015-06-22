@@ -6,7 +6,7 @@ A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and
 * [Detection](#cuckoo-detection):
   * Cuckoo hooks detection (all kind of cuckoo hooks).
   * Suspicius data in own memory (without APIs, page per page scanning).
-* Crash (Execute with arguments):
+* [Crash (Execute with arguments)](#cuckoo-crash):
   * -c1:
 
 ### Cuckoo Detection
