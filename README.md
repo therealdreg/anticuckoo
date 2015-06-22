@@ -1,5 +1,5 @@
 # anticuckoo
-A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and Accuvant version. [Click here to view TODO](#todo)
+A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and Accuvant version. 
 
 ## Features 
 
@@ -8,6 +8,8 @@ A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and
   * Suspicius data in own memory (without APIs, page per page scanning).
 * [Crash (Execute with arguments)](#cuckoo-crash):
   * -c1:
+
+[TODO](#todo)
 
 ### Cuckoo Detection
 
