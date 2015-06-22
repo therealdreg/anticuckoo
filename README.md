@@ -23,7 +23,7 @@ Accesed Files in Sumary (django web):
 
 ### Cuckoo Crash
 
-Specify in submit options the argument, ex via django web: -c1
+Specify in submit options the crash argument, ex **-c1** (via django web):
 
 ![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/cuckooarguments.png)
 
