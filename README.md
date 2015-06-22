@@ -2,13 +2,14 @@
 A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and Accuvant version.
 
 ## Features 
-View [TODO](#TODO)
 
 * [Detection](#cuckoo-detection):
   * Cuckoo hooks detection (all kind of cuckoo hooks).
   * Suspicius data in own memory (without APIs, page per page scanning).
 * [Crash (Execute with arguments)](#cuckoo-crash):
   * -c1:
+
+[Click here to view TODO](#TODO)
 
 ### Cuckoo Detection
 
