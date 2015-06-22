@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <windows.h>
+#include <capstone.h>
 #include "misc.h"
 
 #define VERSION_STRING_EXTENDED "1.0 alpha"
