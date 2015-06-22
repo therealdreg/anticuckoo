@@ -4,10 +4,10 @@ A tool to detect and crash Cuckoo Sandbox. A boring Sunday...
 ## Features 
 Tested in Cuckoo Sandbox Official and Accuvant version:
 * Detection:
-*   Cuckoo hooks detection (all kind of cuckoo hooks).
-*   Suspicius data in own memory (without APIs, page per page scanning).
+  * Cuckoo hooks detection (all kind of cuckoo hooks).
+  * Suspicius data in own memory (without APIs, page per page scanning).
 * Crash (Execute with arguments):
-*   -c1:
+  * -c1:
 
 ### Cuckoo Detection
 
