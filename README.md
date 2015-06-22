@@ -9,7 +9,7 @@ A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and
 * [Crash (Execute with arguments)](#cuckoo-crash):
   * -c1:
 
-[TODO link](#todo)
+[TODO list](#todo)
 
 ### Cuckoo Detection
 
