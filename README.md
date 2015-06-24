@@ -9,6 +9,8 @@ A tool to detect and crash Cuckoo Sandbox. Tested in Cuckoo Sandbox Official and
 * [Crash (Execute with arguments)](#cuckoo-crash) (out of a sandbox these args dont crash the program):
   * -c1: Modify the RET N instruction of a hooked API with a higher value. Next call to API pushing more args into stack. If the hooked API is called from the Cuckoo's HookHandler the program crash because it only pushes the real API args then the modified RET N instruction corrupt the HookHandler's stack.
 
+The overkill methods can be useful. For example using the overkill methods you have two features in one: detection/crash and "a kind of Sleep" (Cuckoomon bypass long Sleeps calls).
+
 [TODO list](#todo)
 
 ### Cuckoo Detection
