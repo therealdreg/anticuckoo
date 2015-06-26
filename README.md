@@ -1,5 +1,7 @@
 # anticuckoo
-A tool to detect and crash Cuckoo Sandbox. Tested in [Cuckoo Sandbox Official](http://www.cuckoosandbox.org/) and [Accuvant's Cuckoo version](https://github.com/brad-accuvant/cuckoo-modified). [Reddit / netsec discussion about anticuckoo.](https://www.reddit.com/r/netsec/comments/3atvmb/anticuckoo_a_tool_to_detect_and_crash_cuckoo/)
+A tool to detect and crash Cuckoo Sandbox. Tested in [Cuckoo Sandbox Official](http://www.cuckoosandbox.org/) and [Accuvant's Cuckoo version](https://github.com/brad-accuvant/cuckoo-modified). 
+
+[Reddit / netsec discussion about anticuckoo.](https://www.reddit.com/r/netsec/comments/3atvmb/anticuckoo_a_tool_to_detect_and_crash_cuckoo/)
 
 ## Features 
 
