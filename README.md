@@ -13,6 +13,8 @@ A tool to detect and crash Cuckoo Sandbox. Tested in [Cuckoo Sandbox Official](h
 
 The overkill methods can be useful. For example using the overkill methods you have two features in one: detection/crash and "a kind of Sleep" (Cuckoomon bypass long Sleeps calls).
 
+Crash POCs is only a demostration. A real malware can be use this code to detect cuckoo without crashing it, ex only check the exception, esp etc and after make useless code.
+
 [TODO list](#todo)
 
 ### Cuckoo Detection
