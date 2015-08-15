@@ -16,7 +16,7 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 		"\n"
 		"Crash parameters:\n"
 		"    -c1: Crashing modifying RET instruction\n"
-		"    -c2: Crashing unhk detector thread\n"
+		"    -c2: Crashing when detects unhk thread\n"
 		"-\n"
 		, 
 		VERSION_STRING_EXTENDED
@@ -61,7 +61,7 @@ DWORD WINAPI RunCreatePocExeThread(void * data)
 int UnhkThreadCrash(void)
 {
 	// TODO: refactor this bullshit, and add more checks.
-	OutInfo("Crashing unhk detector thread");
+	OutInfo("Crashing when detects unhk thread");
 	
 	STARTUPINFO si = { 0 };
 	PROCESS_INFORMATION pi = { 0 };
