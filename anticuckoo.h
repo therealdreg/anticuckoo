@@ -3,9 +3,12 @@
 
 #include <stdlib.h>
 #include <windows.h>
+#include <TlHelp32.h>
+#include <vector>
 #include <capstone.h>
 #include "misc.h"
 
+using namespace std;
 #define VERSION_STRING_EXTENDED "1.1 alpha"
 
 #define SUSP_CTRL_STRING "_CTRL"
@@ -22,6 +25,7 @@ typedef struct
 	bool need_resolv;
 } API_TABLE_t;
 
+
 int AntiCuckoo(int argc, _TCHAR* argv[]);
 int SuspiciusDataInMyMemory(bool * found);
 int filterExceptionExecuteHandler(int code, PEXCEPTION_POINTERS ex);
@@ -29,6 +33,10 @@ void Report(char * format, ...);
 int Hooks(bool * found);
 int CheckHook(bool * found, unsigned char * address);
 int StackRetCrash(void);
+int UnhkThreadCrash(void);
 int GetInstructionOut(char * out_str, size_t out_str_size, cs_insn *insn);
+
+
+
 
 #endif /* _ANTICUCKOO_H__ */

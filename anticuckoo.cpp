@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "anticuckoo.h"
+#include "poc_exe.h"
 
 // TODO: make more .cpp and .h files for all this...
 
@@ -15,6 +16,7 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 		"\n"
 		"Crash parameters:\n"
 		"    -c1: Crashing modifying RET instruction\n"
+		"    -c2: Crashing unhk detector thread\n"
 		"-\n"
 		, 
 		VERSION_STRING_EXTENDED
@@ -24,6 +26,9 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 	{
 		if (_tcscmp(argv[1], TEXT("-c1")) == 0)
 			return StackRetCrash();
+
+		if (_tcscmp(argv[1], TEXT("-c2")) == 0)
+			return UnhkThreadCrash();
 	}
 
 	OutInfo("Detecting cuckoo...");
@@ -42,6 +47,127 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 		if (found)
 			Report("SuspiciusDataInMyMemory");
 	}
+
+	return 0;
+}
+
+DWORD WINAPI RunCreatePocExeThread(void * data)
+{
+	ResumeThread(*((HANDLE*)data));
+
+	return 0;
+}
+
+int UnhkThreadCrash(void)
+{
+	// TODO: refactor this bullshit, and add more checks.
+	OutInfo("Crashing unhk detector thread");
+	
+	STARTUPINFO si = { 0 };
+	PROCESS_INFORMATION pi = { 0 };
+	HANDLE file;
+	DWORD bytes_written;
+	vector <DWORD> tids;
+
+	DeleteFile(TEXT("poc.exe"));
+	file = CreateFile(
+		TEXT("poc.exe"),
+		GENERIC_WRITE,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL
+		);
+
+	if (file == INVALID_HANDLE_VALUE)
+	{
+		Error("CreateFile");
+		return -1;
+	}
+
+	if (
+		WriteFile(
+			file, 
+			exe_poc,
+			sizeof(exe_poc),
+			&bytes_written,
+			NULL
+		)
+		== 
+		0
+		)
+	{
+		Error("WriteFile");
+		return -1;
+	}
+
+	if (bytes_written != sizeof(exe_poc))
+	{
+		Error("bytes_written error");
+		return -1;
+	}
+
+	FlushFileBuffers(file);
+	CloseHandle(file);
+
+	if (
+		CreateProcess(
+		TEXT("poc.exe"),
+		NULL,
+		NULL,
+		NULL,
+		FALSE,
+		CREATE_NEW_CONSOLE | CREATE_SUSPENDED,
+		NULL,
+		NULL,
+		&si,
+		&pi
+		)
+		==
+		0
+		)
+	{
+		return -1;
+	}
+	
+	RunCreatePocExeThread(&(pi.hThread));
+	
+	int i = 0;
+	do
+	{ 
+		HANDLE snapshot_handle = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pi.dwProcessId);
+		if (snapshot_handle != INVALID_HANDLE_VALUE)
+		{
+			THREADENTRY32 thread_entry;
+			thread_entry.dwSize = sizeof(thread_entry);
+			if (Thread32First(snapshot_handle, &thread_entry))
+			{
+				do
+				{
+					if (thread_entry.th32OwnerProcessID == pi.dwProcessId)
+					{
+						if (find(tids.begin(), tids.end(), thread_entry.th32ThreadID) == tids.end())
+						{
+							tids.push_back(thread_entry.th32ThreadID);
+							OutInfo("New TID detected!: 0x%X", thread_entry.th32ThreadID);
+						}
+
+						if (tids.size() > 2)
+						{
+							OutInfo("New threads in a single thread process! maybe a unhk thread detector, Crashing...\n");
+							fflush(stdout);
+							// very ugly cast here: 
+							((void(*)(void))NULL)();
+						}
+					}
+				} while (Thread32Next(snapshot_handle, &thread_entry));
+			}
+
+			CloseHandle(snapshot_handle);
+		}
+		Sleep(1000);
+	} while (i++ < 60);
 
 	return 0;
 }
