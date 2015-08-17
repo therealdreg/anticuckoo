@@ -69,6 +69,7 @@ int UnhkThreadCrash(void)
 	DWORD bytes_written;
 	vector <DWORD> tids;
 
+	system("taskkill /F /im poc.exe 2> NUL");
 	DeleteFile(TEXT("poc.exe"));
 	file = CreateFile(
 		TEXT("poc.exe"),
@@ -134,6 +135,7 @@ int UnhkThreadCrash(void)
 	RunCreatePocExeThread(&(pi.hThread));
 	
 	int i = 0;
+	OutInfo("Detecting new TIDs in the remote single thread process, wait aprox 60 seconds!");
 	do
 	{ 
 		HANDLE snapshot_handle = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pi.dwProcessId);
@@ -150,7 +152,7 @@ int UnhkThreadCrash(void)
 						if (find(tids.begin(), tids.end(), thread_entry.th32ThreadID) == tids.end())
 						{
 							tids.push_back(thread_entry.th32ThreadID);
-							OutInfo("New TID detected!: 0x%X", thread_entry.th32ThreadID);
+							OutInfo("\nNew TID detected!: 0x%X", thread_entry.th32ThreadID);
 						}
 
 						if (tids.size() > 2)
@@ -166,8 +168,14 @@ int UnhkThreadCrash(void)
 
 			CloseHandle(snapshot_handle);
 		}
+		printf(".");
 		Sleep(1000);
 	} while (i++ < 60);
+
+	TerminateProcess(pi.hProcess, 0);
+	DeleteFile(TEXT("poc.exe"));
+
+	OutInfo("\nCongratz! NOT CUCKOOMON HERE!!");
 
 	return 0;
 }
