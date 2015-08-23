@@ -17,6 +17,7 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 		"Crash parameters:\n"
 		"    -c1: Crashing modifying RET instruction\n"
 		"    -c2: Crashing when detects unhk thread\n"
+		"    -c3: Crashing when detects hk activity in the old stack area\n"
 		"-\n"
 		, 
 		VERSION_STRING_EXTENDED
@@ -29,6 +30,9 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 
 		if (_tcscmp(argv[1], TEXT("-c2")) == 0)
 			return UnhkThreadCrash();
+
+		if (_tcscmp(argv[1], TEXT("-c3")) == 0)
+			return HKActivOldStackCrash();
 	}
 
 	OutInfo("Detecting cuckoo...");
@@ -48,6 +52,192 @@ int AntiCuckoo(int argc, _TCHAR* argv[])
 			Report("SuspiciusDataInMyMemory");
 	}
 
+	return 0;
+}
+
+void * GetCurrentThreadBaseStack()
+{
+	__asm
+	{
+		MOV EAX, DWORD PTR FS : [18h];
+		MOV EAX, DWORD PTR[EAX+8]
+	}
+}
+
+inline void * GetCurrentThreadESP()
+{
+	__asm
+	{
+		MOV EAX, ESP
+	}
+}
+
+void * WINAPI OwnGetProcAddress(HMODULE module, char * proc_name)
+{
+	IMAGE_EXPORT_DIRECTORY * export_dir;
+	IMAGE_NT_HEADERS32 * nt_headers;
+	void * address = NULL;
+	DWORD * address_of_names;
+
+	// casting hell x)
+
+	nt_headers = (IMAGE_NT_HEADERS32 *)(((char *)module) + ((IMAGE_DOS_HEADER *)module)->e_lfanew);
+
+	export_dir = (IMAGE_EXPORT_DIRECTORY *)(((char *)module) + nt_headers->OptionalHeader.DataDirectory[0].VirtualAddress);
+
+	address_of_names = (DWORD *)(((char *)module) + export_dir->AddressOfNames);
+
+	for (unsigned int i = 0; i < export_dir->NumberOfNames; i++)
+	{
+		if (memcmp(((char *)module) + (*address_of_names), proc_name, strlen(proc_name) + 1) == 0)
+		{
+			WORD ord = *(((WORD *)(((char *)module) + export_dir->AddressOfNameOrdinals)) + i);
+
+			address = (void *)(((char *)module) + *(((DWORD *)(((char *)module) + export_dir->AddressOfFunctions)) + ord));
+
+			break;
+		}
+		address_of_names++;
+	} 
+	
+	return address;
+}
+
+int HKActivOldStackCrash(void)
+{
+	NtCreateFile_t NtCreateFile_f;
+	OBJECT_ATTRIBUTES obj_attr = { 0 };
+	UNICODE_STRING name_file = { 0 };
+	IO_STATUS_BLOCK status_block = { 0 };
+	RtlInitUnicodeString_t RtlInitUnicodeString_f = (RtlInitUnicodeString_t)GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlInitUnicodeString");
+	HANDLE file_handle = 0;
+	DWORD * stack_base = (DWORD *)GetCurrentThreadBaseStack();
+	bool cuckoo = true;
+	DWORD number_garbage_stack = 0;
+	DWORD last_esp;
+
+	OutInfo("Crashing when detects hk activity in the old stack area\n");
+
+	if (GetModuleHandle(TEXT("apphelp.dll")) != NULL)
+	{
+		OutInfo("apphelp.dll detected, using OwnGetProcAddress...");
+		NtCreateFile_f = (NtCreateFile_t)OwnGetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "NtCreateFile");
+		OutInfo("NtCreateFile = 0x%08X", NtCreateFile_f);
+	}
+	else
+		NtCreateFile_f = (NtCreateFile_t)GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "NtCreateFile");
+
+	if (NtCreateFile_f == NULL)
+	{
+		Error("GetProcAddress NtCreateFile!");
+		return -1;
+	}
+
+	if (RtlInitUnicodeString_f == NULL)
+	{
+		Error("GetProcAddress RtlInitUnicodeString!");
+		return -1;
+	}
+
+	OutInfo(
+		"GetCurrentThreadBaseStack: 0x%08X\nNtCreateFile: 0x%08X - RtlInitUnicodeString_f: 0x%08X\n",
+		(DWORD)stack_base, NtCreateFile_f, RtlInitUnicodeString_f
+		);
+
+	RtlInitUnicodeString_f(&name_file, L"\\DosDevices\\C:\\crap.txt");
+
+	InitializeObjectAttributes(&obj_attr, &name_file, OBJ_CASE_INSENSITIVE, NULL, NULL);
+
+	__asm
+	{
+		// very ugly ASM here, is very easy improve it, but I want know copy pasters in the wild.. :-)
+		XOR ECX, ECX;
+
+		push_create_file_args:
+		PUSH 0;
+		PUSH 0;
+		PUSH FILE_NON_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT;
+		PUSH FILE_OPEN_IF;
+		PUSH 0;
+		PUSH FILE_ATTRIBUTE_NORMAL;
+		PUSH 0;
+
+		LEA EAX, status_block;
+		PUSH EAX;
+
+		LEA EAX, obj_attr;
+		PUSH EAX;
+
+		PUSH FILE_APPEND_DATA | SYNCHRONIZE;
+
+		LEA EAX, file_handle;
+		PUSH EAX;
+
+		INC ECX;
+
+		CMP ECX, 1
+		jz push_create_file_args
+
+		MOV EAX, ESP
+		fill_stack:
+		PUSH 0FAFAFAFAh;
+		CMP ESP, stack_base;
+		JNE fill_stack;
+		MOV ESP, EAX;
+
+		CALL NtCreateFile_f;
+
+		XOR ECX, ECX;
+		loop_tg:
+		CMP ECX, 2Ch;
+		jz end_loop_tg;
+		LEA EAX, [ESP - 2Ch + ECX];
+		LEA EBX, [ESP + ECX];
+
+		MOV ESI, [EAX];
+		MOV DWORD PTR [EAX], 0FAFAFAFAh;
+		MOV EDI, [EBX];
+		ADD ECX, 4
+		CMP ESI, EDI;
+		JZ loop_tg; // this mean some hook handler activity after the call to the real API...
+		JMP error_fd;
+
+		end_loop_tg:
+		LEA EAX, [ESP+2Ch];
+		MOV ESP, stack_base;
+		XOR ECX, ECX
+					
+		loop_ngds:
+		POP EBX;
+		CMP EBX, 0FAFAFAFAh;
+		JZ NOT_INC_ECX;
+		INC ECX;
+		NOT_INC_ECX:
+		CMP ESP, EAX;
+		JNZ loop_ngds;
+
+		SUB ECX, 11;
+		CMP ECX, 4h;
+		JG error_fd;
+
+		MOV cuckoo, 0;
+
+		error_fd:
+		MOV number_garbage_stack, ECX
+		mov last_esp, esp;
+
+	}
+
+	if (cuckoo)
+	{
+		OutInfo("CUCKOOMON detected!! garbage in stack: %d, esp: 0x%08X\n Crashing....\n", number_garbage_stack, last_esp);
+		fflush(stdout);
+		// very ugly cast here: 
+		((void(*)(void))NULL)();
+	}
+	else
+		OutInfo("No CUCKOOMON detected!!\n");
+	
 	return 0;
 }
 
