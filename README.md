@@ -1,6 +1,10 @@
 # anticuckoo
 A tool to detect and crash Cuckoo Sandbox. Tested in [Cuckoo Sandbox Official](http://www.cuckoosandbox.org/) and [Accuvant's Cuckoo version](https://github.com/brad-accuvant/cuckoo-modified). 
 
+Anticuckoo can also detect other sandbox like FireEye (-c2):
+
+![ScreenShot](https://github.com/David-Reguera-Garcia-Dreg/anticuckoo/blob/images/fireyee.png)
+
 [Reddit / netsec discussion about anticuckoo.](https://www.reddit.com/r/netsec/comments/3atvmb/anticuckoo_a_tool_to_detect_and_crash_cuckoo/)
 
 ## Features 
