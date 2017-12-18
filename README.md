@@ -49,3 +49,11 @@ And check **Screenshots/connect via RDP/whatson connection** to verify the crash
 * Cuckoo's TLS entry detection.
 
 New ideas & PRs are wellcome.
+
+## Referenced by
+
+* Stealthy, Hypervisor-based Malware Analysis - Tamas K Lengyel: https://www.slideshare.net/tklengyel/stealthy-hypervisorbased-malware-analysis
+* Multiple Instance Learning for Malware Classification - Jan Stiborek, Tomáš Pevný, Martin Rehák: https://arxiv.org/pdf/1705.02268.pdf
+* To Catch a Ratter: Monitoring the Behavior of Amateur DarkComet RAT Operators in the Wild - Brown Farinholt, Mohammad Rezaeirad, Paul Pearce, Hitesh Dharmdasani, Haikuo Yin, Stevens Le Blondk, Damon McCoy, Kirill Levchenko: http://damonmccoy.com/papers/rat-sp17.pdf
+* Hack&Beers Cadiz Análisis de Malware Cuckoo Sandbox - Mario Alberto Parra Alonso: https://www.slideshare.net/MarioAlbertoParraAlo/hackbeers-cadiz-anlisis-de-malware-cuckoo-sandbox
+
