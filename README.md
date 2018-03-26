@@ -59,4 +59,5 @@ New ideas & PRs are wellcome.
 * To Catch a Ratter: Monitoring the Behavior of Amateur DarkComet RAT Operators in the Wild - Brown Farinholt, Mohammad Rezaeirad, Paul Pearce, Hitesh Dharmdasani, Haikuo Yin, Stevens Le Blondk, Damon McCoy, Kirill Levchenko: http://damonmccoy.com/papers/rat-sp17.pdf
 * Hack&Beers Cadiz Análisis de Malware Cuckoo Sandbox - Mario Alberto Parra Alonso: https://www.slideshare.net/MarioAlbertoParraAlo/hackbeers-cadiz-anlisis-de-malware-cuckoo-sandbox
 * Defense in Depth: Detonation Technologies: http://blog.inquest.net/blog/2018/03/12/defense-in-depth-detonation-technologies/
+* Dynamic Reconfiguration of Intrusion Detection Systems - Jan Stiborek: https://dspace.cvut.cz/bitstream/handle/10467/73562/Disertace_Stiborek_2017.pdf
 
