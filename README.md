@@ -53,7 +53,7 @@ New ideas & PRs are wellcome.
 ## Referenced by
 
 * Stealthy, Hypervisor-based Malware Analysis - Tamas K Lengyel: https://www.slideshare.net/tklengyel/stealthy-hypervisorbased-malware-analysis
-* Brad Spengler (grsecurity) nice words: https://github.com/brad-accuvant/community-modified/commit/29587d691242a9ba890877f623fdf2447fe4336f
+* Brad Spengler (grsecurity) nice words: https://github.com/brad-sp/community-modified/commit/29587d691242a9ba890877f623fdf2447fe4336f
 * Reddit / netsec discussion about anticuckoo: https://www.reddit.com/r/netsec/comments/3atvmb/anticuckoo_a_tool_to_detect_and_crash_cuckoo/
 * Multiple Instance Learning for Malware Classification - Jan Stiborek, Tomáš Pevný, Martin Rehák: https://arxiv.org/pdf/1705.02268.pdf
 * To Catch a Ratter: Monitoring the Behavior of Amateur DarkComet RAT Operators in the Wild - Brown Farinholt, Mohammad Rezaeirad, Paul Pearce, Hitesh Dharmdasani, Haikuo Yin, Stevens Le Blondk, Damon McCoy, Kirill Levchenko: http://damonmccoy.com/papers/rat-sp17.pdf
