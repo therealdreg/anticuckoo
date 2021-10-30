@@ -7,6 +7,8 @@ Anticuckoo can also detect other sandbox like FireEye (-c2):
 
 [Reddit / netsec discussion about anticuckoo.](https://www.reddit.com/r/netsec/comments/3atvmb/anticuckoo_a_tool_to_detect_and_crash_cuckoo/)
 
+Please, consider make a donation: https://github.com/sponsors/therealdreg
+
 ## Features 
 
 * [Detection](#cuckoo-detection):
