@@ -62,4 +62,4 @@ New ideas & PRs are wellcome.
 * Hack&Beers Cadiz Análisis de Malware Cuckoo Sandbox - Mario Alberto Parra Alonso: https://www.slideshare.net/MarioAlbertoParraAlo/hackbeers-cadiz-anlisis-de-malware-cuckoo-sandbox
 * Defense in Depth: Detonation Technologies: http://blog.inquest.net/blog/2018/03/12/defense-in-depth-detonation-technologies/
 * Dynamic Reconfiguration of Intrusion Detection Systems - Jan Stiborek: https://dspace.cvut.cz/bitstream/handle/10467/73562/Disertace_Stiborek_2017.pdf
-
+* New Dynamic Bypass Technique Working in Certain Environments Only: https://asec.ahnlab.com/en/16540/
