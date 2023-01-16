@@ -536,68 +536,88 @@ int Hooks(bool * found)
 int CheckHook(bool * found, unsigned char * address)
 {
 	*found = true;
+	using hook_tbl_t = std::unordered_map<std::string, bool>;
+	
 	//TODO: make a table here
-	if (address[0] == 0xE9)
+	// hashmap/table for various types of HOOKING byte sequences
+	hook_tbl_t hook_types_table{
+		{"jmp_direct", (address[0] == 0xE9)},
+		{"nop_jmp_direct", (address[0] == 0x90 && address[1] == 0xE9)},
+		{"hotpatch_jmp_direct", (address[0] == 0x8B && address[1] == 0xFF && address[2] == 0xE9)},
+		{"push_retn", (address[0] == 0x68 && address[5] == 0xC3)},
+		{"nop_push_retn", (address[0] == 0x90 && address[1] == 0x68 && address[6] == 0xC3)},
+		{"jmp_indirect", (address[0] == 0xFF && address[1] == 0x25)},
+		{"hotpatch_jmp_indirect", (address[0] == 0x8B && address[1] == 0xFF && address[2] == 0xFF && address[3] == 0x25)},
+		{"mov_eax_jmp_eax", (address[0] == 0xB8 && address[5] == 0xFF && address[6] == 0xE0)},
+		{"mov_eax_push_retn", (address[0] == 0xB8 && address[5] == 0x50 && address[6] == 0xC3)},
+		{"mov_eax_indirect_jmp_eax", (address[0] == 0xA1 && address[5] == 0xFF && address[6] == 0xE0)},
+		{"mov_eax_indirect_jmp_eax_2", (address[0] == 0xA1 && address[5] == 0x50 && address[6] == 0xC3)},
+		{"special_jmp", (address[0] == 0x90 && address[1] == 0x90 && address[3] == 0xE9)},
+		{"native_jmp_indirect", (address[5] == 0xFF && address[6] == 0x25)}
+	};
+
+	// start accessing the entries
+	if (hook_types_table["jmp_direct"])
 	{
 		OutInfo("hook_api_jmp_direct Detected!");
 		Report("hook_api_jmp_direct");
 	}
-	else if (address[0] == 0x90 && address[1] == 0xE9)
+	else if (hook_types_table["nop_jmp_direct"])
 	{
 		OutInfo("hook_api_nop_jmp_direct Detected!");
 		Report("hook_api_nop_jmp_direct");
 	}
-	else if (address[0] == 0x8B && address[1] == 0xFF && address[2] == 0xE9)
+	else if (hook_types_table["hotpatch_jmp_direct"])
 	{
 		OutInfo("hook_api_hotpatch_jmp_direct Detected!");
 		Report("hook_api_hotpatch_jmp_direct");
 	}
-	else if (address[0] == 0x68 && address[5] == 0xC3)
+	else if (hook_types_table["push_retn"])
 	{
 		OutInfo("hook_api_push_retn Detected!");
 		Report("hook_api_push_retn");
 	}
-	else if (address[0] == 0x90 && address[1] == 0x68 && address[6] == 0xC3)
+	else if (hook_types_table["nop_push_retn"])
 	{
 		OutInfo("hook_api_nop_push_retn Detected!");
 		Report("hook_api_nop_push_retn");
 	}
-	else if (address[0] == 0xFF && address[1] == 0x25)
+	else if (hook_types_table["jmp_indirect"])
 	{
 		OutInfo("hook_api_jmp_indirect Detected!");
 		Report("hook_api_jmp_indirect");
 	}
-	else if (address[0] == 0x8B && address[1] == 0xFF && address[2] == 0xFF && address[3] == 0x25)
+	else if (hook_types_table["hotpatch_jmp_indirect"])
 	{
 		OutInfo("hook_api_hotpatch_jmp_indirect Detected!");
 		Report("hook_api_hotpatch_jmp_indirect");
 	}
-	else if (address[0] == 0xB8 && address[5] == 0xFF && address[6] == 0xE0)
+	else if (hook_types_table["mov_eax_jmp_eax"])
 	{
 		OutInfo("hook_api_mov_eax_jmp_eax Detected!");
 		Report("hook_api_mov_eax_jmp_eax");
 	}
-	else if (address[0] == 0xB8 && address[5] == 0x50 && address[6] == 0xC3)
+	else if (hook_types_table["mov_eax_push_retn"])
 	{
 		OutInfo("hook_api_mov_eax_push_retn Detected!");
 		Report("hook_api_mov_eax_push_retn");
 	}
-	else if (address[0] == 0xA1 && address[5] == 0xFF && address[6] == 0xE0)
+	else if (hook_types_table["mov_eax_indirect_jmp_eax"])
 	{
 		OutInfo("hook_api_mov_eax_indirect_jmp_eax Detected!");
 		Report("hook_api_mov_eax_indirect_jmp_eax");
 	}
-	else if (address[0] == 0xA1 && address[5] == 0x50 && address[6] == 0xC3)
+	else if (hook_types_table["mov_eax_indirect_jmp_eax_2"])
 	{
 		OutInfo("hook_api_mov_eax_indirect_jmp_eax Detected!");
 		Report("hook_api_mov_eax_indirect_jmp_eax");
 	}
-	else if (address[0] == 0x90 && address[1] == 0x90 && address[3] == 0xE9)
+	else if (hook_types_table["special_jmp"])
 	{
 		OutInfo("hook_api_special_jmp Detected!");
 		Report("hook_api_special_jmp");
 	}
-	else if (address[5] == 0xFF && address[6] == 0x25)
+	else if (hook_types_table["native_jmp_indirect"])
 	{
 		OutInfo("hook_api_native_jmp_indirect Detected!");
 		Report("hook_api_native_jmp_indirect");
