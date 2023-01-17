@@ -550,7 +550,7 @@ int CheckHook(bool * found, unsigned char * address)
 		{"hotpatch_jmp_indirect", (address[0] == 0x8B && address[1] == 0xFF && address[2] == 0xFF && address[3] == 0x25)},
 		{"mov_eax_jmp_eax", (address[0] == 0xB8 && address[5] == 0xFF && address[6] == 0xE0)},
 		{"mov_eax_push_retn", (address[0] == 0xB8 && address[5] == 0x50 && address[6] == 0xC3)},
-		{"mov_eax_indirect_jmp_eax", (address[0] == 0xA1 && address[5] == 0xFF && address[6] == 0xE0)},
+		{"mov_eax_indirect_jmp_eax_1", (address[0] == 0xA1 && address[5] == 0xFF && address[6] == 0xE0)},
 		{"mov_eax_indirect_jmp_eax_2", (address[0] == 0xA1 && address[5] == 0x50 && address[6] == 0xC3)},
 		{"special_jmp", (address[0] == 0x90 && address[1] == 0x90 && address[3] == 0xE9)},
 		{"native_jmp_indirect", (address[5] == 0xFF && address[6] == 0x25)}
@@ -602,7 +602,7 @@ int CheckHook(bool * found, unsigned char * address)
 		OutInfo("hook_api_mov_eax_push_retn Detected!");
 		Report("hook_api_mov_eax_push_retn");
 	}
-	else if (hook_types_table["mov_eax_indirect_jmp_eax"])
+	else if (hook_types_table["mov_eax_indirect_jmp_eax_1"])
 	{
 		OutInfo("hook_api_mov_eax_indirect_jmp_eax Detected!");
 		Report("hook_api_mov_eax_indirect_jmp_eax");
