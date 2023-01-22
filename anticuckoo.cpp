@@ -538,7 +538,6 @@ int CheckHook(bool * found, unsigned char * address)
 	*found = true;
 	using hook_tbl_t = std::unordered_map<std::string, bool>;
 	
-	//TODO: make a table here
 	// hashmap/table for various types of HOOKING byte sequences
 	hook_tbl_t hook_types_table{
 		{"jmp_direct", (address[0] == 0xE9)},
