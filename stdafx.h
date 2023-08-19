@@ -9,6 +9,8 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <unordered_map>
+#include <string>
 
 
 
